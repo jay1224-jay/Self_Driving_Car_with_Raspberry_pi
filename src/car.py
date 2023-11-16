@@ -12,13 +12,37 @@ servo_pwm = GPIO.PWM(SERVO_PIN1, freq)
 servo_pwm.start(50)
 """
 
+STOP  = 0
+RIGHT = 1
+LEFT  = 2
+
+def PWMPercentage
+
 class Car:
 
     def __init__(self, left_pin, right_pin, freq = 50):
 
+        """
+        Car module for Raspberry pi
+
+        attribute:
+            
+            freq: 
+                Frequency of the car.
+
+            status:
+                Status of the car.
+                signal:
+                    0: stop
+                    1: right
+                    2: left
+        """
+
+
         self.left_pin  = left_pin
         self.right_pin = right_pin
         self.freq      = freq
+        self.status    = STOP
 
         # Set PWM object
         self.left_pwm  = GPIO.PWM(self.left_pin , self.freq)
@@ -28,10 +52,67 @@ class Car:
         self.left_pwm.start(0)
         self.right_pwm.start(0)
 
+        # Right direction duty cycle
+        self.right_duty_max = 3
+        self.right_duty_mid = 2
+        self.right_duty_min = 1
 
+        # Right direction duty cycle
+        self.left_duty_max = 4
+        self.left_duty_mid = 5
+        self.left_duty_min = 6
 
+    def TurnRight(self):
+        """
+        Make the car turn right.
 
+        V-left > V-right
 
+        pattern: left_max | right_mid
+
+        """
+        
+        print("Car starts to turn right.")
+        self.left_pwm.ChangeDutyCycle(self.left_duty_max)
+        self.right_pwm.ChangeDutyCycle(self.right_duty_mid)
+        
+        self.status = RIGHT
+
+    def TurnLeft(self):
+        """
+        Make the car turn left.
+
+        V-left < V-right
+
+        pattern: left_mid | right_max
+
+        """
+
+        print("Car starts to turn left.")
+        self.left_pwm.ChangeDutyCycle(self.left_duty_mid)
+        self.right_pwm.ChangeDutyCycle(self.right_duty_max)
+
+        self.status = LEFT
+
+    def Stop(self):
+        """
+        Stop the car instantly
+
+        V-left = V-right = 0
+
+        pattern: left_min | right_min
+
+        """
+
+        print("Stop the car.")
+        self.left_pwm.ChangeDutyCycle(self.left_duty_min)
+        self.right_pwm.ChangeDutyCycle(self.right_duty_min)
+
+        self.status = STOP
+
+    def GetStatus(self):
+
+        return self.status
 
 
 if __name__ == '__main__':
