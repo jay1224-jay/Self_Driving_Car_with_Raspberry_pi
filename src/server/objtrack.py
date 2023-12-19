@@ -1,6 +1,10 @@
-import cv2
-import sys
+import cv2, socket, numpy, pickle
 import time
+import sys
+
+from server import Server
+
+
  
 (major_ver, minor_ver, subminor_ver) = (cv2.__version__).split('.')
 
@@ -8,14 +12,15 @@ def middle_of_2_point(p1, p2):
     return ( int((p1[0]+p2[0])/2) , 
              int((p1[1]+p2[1])/2) )
 
-"""
-def direction(dx, dy):
-    if ( dx == 0 ):
-        if dy 
-"""
+
+client = "localhost"
 
 if __name__ == '__main__' :
  
+    myServer = Server(clientIP = client);
+
+    frame = myServer.recvImageFromClient()
+
     # Set up tracker.
     # Instead of MIL, you can also use
  
@@ -43,21 +48,6 @@ if __name__ == '__main__' :
         if tracker_type == "CSRT":
             tracker = cv2.TrackerCSRT_create()
  
-    # Read video
-    video_path = "test.mkv"
-    # video = cv2.VideoCapture(video_path)
-    video = cv2.VideoCapture(0)  # use camera as video source
- 
-    # Exit if video not opened.
-    if not video.isOpened():
-        print("Could not open video")
-        sys.exit()
- 
-    # Read first frame.
-    ok, frame = video.read()
-    if not ok:
-        print('Cannot read video file')
-        sys.exit()
      
     # Define an initial bounding box
     bbox = (287, 23, 86, 320)
@@ -76,32 +66,21 @@ if __name__ == '__main__' :
     # time.sleep(2)
  
     while True:
-        # Read a new frame
-        ok, frame = video.read()
-        # print(frame)
-        if not ok:
-            break
-         
-        # Start timer
+
+        frame = myServer.recvImageFromClient()
+
         timer = cv2.getTickCount()
  
-        # Update tracker
         ok, bbox = tracker.update(frame)
  
-        # Calculate Frames per second (FPS)
         fps = cv2.getTickFrequency() / (cv2.getTickCount() - timer);
 
-        # if ( fps - target_fps > 10 ):
-        #     time.sleep( 1/abs(fps-target_fps) )
-        # time.sleep(0.05)
- 
-        # Draw bounding box
         ratio = 3
         if ok:
+
+            """
             print(bbox)
             # Tracking success
-            p1 = (int(bbox[0]), int(bbox[1]))
-            p2 = (int(bbox[0] + bbox[2]), int(bbox[1] + bbox[3]))
 
             if ( pre_point == (-1, -1) ):
                 pre_point = middle_of_2_point(p1, p2)
@@ -126,7 +105,10 @@ if __name__ == '__main__' :
             pre_point = middle_point
 
             print("middle point:", middle_point, ", dx:", dx, ", dy:", dy)
+            """
 
+            p1 = (int(bbox[0]), int(bbox[1]))
+            p2 = (int(bbox[0] + bbox[2]), int(bbox[1] + bbox[3]))
             cv2.rectangle(frame, p1, p2, (255,0,0), 2, 1)
         else :
             # Tracking failure
@@ -140,7 +122,9 @@ if __name__ == '__main__' :
  
         # Display result
         cv2.imshow("Tracking", frame)
- 
-        # Exit if ESC pressed
-        k = cv2.waitKey(1) & 0xff
-        if k == 27 : break
+
+        if cv2.waitKey(1) == ord('q'):
+            break
+
+
+cv2.destroyAllWindows()
