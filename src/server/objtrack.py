@@ -48,18 +48,11 @@ if __name__ == '__main__' :
         if tracker_type == "CSRT":
             tracker = cv2.TrackerCSRT_create()
  
-     
-    # Define an initial bounding box
-    bbox = (287, 23, 86, 320)
  
-    # Uncomment the line below to select a different bounding box
     bbox = cv2.selectROI(frame, False)
  
-    # Initialize tracker with first frame and bounding box
     ok = tracker.init(frame, bbox)
 
-
-    # time.sleep(2)
  
     while True:
 
@@ -124,16 +117,26 @@ if __name__ == '__main__' :
 
             cv2.arrowedLine(frame, currentPoint, centerPoint, (0, 0, 0), 3)
 
+            # show car direction message
+
+            directionMessage = ""
+            if centerPoint[0] - currentPoint[0] > 0:
+                # turn camera to left
+                directionMessage = "Turn Left"
+            else:
+                directionMessage = "Turn Right"
+
+            cv2.putText(frame, directionMessage, (int(frameWidth/2),30), cv2.FONT_HERSHEY_SIMPLEX, 1, (0,0,0),2);
 
         else :
             # Tracking failure
             cv2.putText(frame, "Tracking failure detected", (100,80), cv2.FONT_HERSHEY_SIMPLEX, 0.75,(0,0,255),2)
  
         # Display tracker type on frame
-        cv2.putText(frame, tracker_type + " Tracker", (100,20), cv2.FONT_HERSHEY_SIMPLEX, 0.75, (200,170,50),2);
+        cv2.putText(frame, tracker_type + " Tracker", (100,20), cv2.FONT_HERSHEY_SIMPLEX, 0.75, (0,170,50),2);
      
         # Display FPS on frame
-        cv2.putText(frame, "FPS : " + str(int(fps)), (100,50), cv2.FONT_HERSHEY_SIMPLEX, 0.75, (200,170,50), 2);
+        cv2.putText(frame, "FPS : " + str(int(fps)), (100,50), cv2.FONT_HERSHEY_SIMPLEX, 0.75, (0,170,50), 2);
  
         # Display result
         cv2.imshow("Tracking", frame)

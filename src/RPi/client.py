@@ -13,7 +13,7 @@ while True:
     # print(photo[0], photo[1])
 
     # cv2.imshow('streaming',photo)
-    ret,buffer = cv2.imencode(".jpg",photo,[int(cv2.IMWRITE_JPEG_QUALITY),10])
+    ret,buffer = cv2.imencode(".jpg",photo,[int(cv2.IMWRITE_JPEG_QUALITY),30])
     x_as_bytes = pickle.dumps(buffer)
     s.sendto((x_as_bytes),(server_ip,server_port))
     if cv2.waitKey(10)==ord('q'):
