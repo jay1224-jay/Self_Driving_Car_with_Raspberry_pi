@@ -58,10 +58,6 @@ if __name__ == '__main__' :
     # Initialize tracker with first frame and bounding box
     ok = tracker.init(frame, bbox)
 
-    target_fps = 60
-
-    middle_point = (0, 0)
-    pre_point    = (-1, -1)    
 
     # time.sleep(2)
  
@@ -79,6 +75,9 @@ if __name__ == '__main__' :
         if ok:
 
             """
+
+            # draw direction
+
             print(bbox)
             # Tracking success
 
@@ -107,9 +106,25 @@ if __name__ == '__main__' :
             print("middle point:", middle_point, ", dx:", dx, ", dy:", dy)
             """
 
+
+            # draw to center
             p1 = (int(bbox[0]), int(bbox[1]))
             p2 = (int(bbox[0] + bbox[2]), int(bbox[1] + bbox[3]))
             cv2.rectangle(frame, p1, p2, (255,0,0), 2, 1)
+
+            # the line pointing to the center
+
+            frameHeight   = frame.shape[0]
+            frameWidth    = frame.shape[1]
+            frameChannels = frame.shape[2]
+
+            centerPoint = [int(frameWidth/2), int(frameHeight/2)]
+
+            currentPoint = middle_of_2_point(p1, p2)
+
+            cv2.arrowedLine(frame, currentPoint, centerPoint, (0, 0, 0), 3)
+
+
         else :
             # Tracking failure
             cv2.putText(frame, "Tracking failure detected", (100,80), cv2.FONT_HERSHEY_SIMPLEX, 0.75,(0,0,255),2)
