@@ -16,11 +16,12 @@ colorYellow = (0, 255, 255)
 colorBlack = (0, 0, 0)
 colorGreen = (0, 255, 0)
 
-client = "localhost"
+client = "0.0.0.0"
 
 if __name__ == '__main__' :
  
-    myServer = Server(clientIP = client);
+    myServer = Server(clientIP = client)
+    myServer.sendMessageToClient("Hello from server")
 
     frame = myServer.recvImageFromClient()
 
@@ -52,15 +53,18 @@ if __name__ == '__main__' :
             tracker = cv2.TrackerCSRT_create()
  
  
+    time.sleep(2)
     bbox = cv2.selectROI(frame, False)
 
-    myServer.sendMessageToClient("3")
+    # myServer.sendMessageToClient("3")
  
     ok = tracker.init(frame, bbox)
+
 
  
     while True:
 
+        myServer.sendMessageToClient("")
         frame = myServer.recvImageFromClient()
 
         timer = cv2.getTickCount()
@@ -127,14 +131,13 @@ if __name__ == '__main__' :
 
             directionMessage = ""
             if centerPoint[0] - currentPoint[0] > 0:
-                # turn camera to left
                 directionMessage = "Turn Left"
-                Server.sendMessageToClient("0")
+                myServer.sendMessageToClient("0")
             else:
                 directionMessage = "Turn Right"
-                Server.sendMessageToClient("1")
+                myServer.sendMessageToClient("1")
 
-            cv2.putText(frame, directionMessage, (int(frameWidth/2),30), cv2.FONT_HERSHEY_SIMPLEX, 1, colorBlack,2);
+            cv2.putText(frame, directionMessage, (int(frameWidth/2),30), cv2.FONT_HERSHEY_SIMPLEX, 1, colorYellow,2);
 
         else :
             # Tracking failure

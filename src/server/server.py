@@ -6,17 +6,21 @@ class Server:
 
     def __init__(self, clientIP):
         print("start building socket...")
-        self.s=socket.socket(socket.AF_INET , socket.SOCK_DGRAM)
+        self.s=socket.socket()
+        self.host = socket.gethostname()
+        print(self.host)
         self.ip=clientIP
         self.port=6666
-        self.s.bind((self.ip,self.port))
+        self.s.bind((self.host,self.port))
+        self.s.listen(2)
+        self.conn, address = self.s.accept()
+        print("Connection from: " + str(address))
         print("connect successfully")
 
  
     def recvImageFromClient(self):
 
-        x=self.s.recvfrom(1000000)
-        clientip = x[1][0]
+        x=self.conn.recvfrom(1000000)
         self.data=x[0]
         self.data=pickle.loads(self.data)
         self.data = cv2.imdecode(self.data, cv2.IMREAD_COLOR)
@@ -34,6 +38,5 @@ class Server:
 
         """
 
-        self.s.sendto((message.encode()), (self.ip, self.port))
-        print("Message sent successfully")
+        self.conn.send(message.encode())
 
