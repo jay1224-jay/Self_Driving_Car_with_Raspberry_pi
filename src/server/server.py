@@ -23,4 +23,17 @@ class Server:
 
         return self.data
 
+    def sendMessageToClient(self, message):
+
+        """
+        
+        Direction message:
+
+            0 stands for left
+            1 stands for right
+
+        """
+
+        self.s.sendto((message.encode()), (self.ip, self.port))
+        print("Message sent successfully")
 

@@ -12,6 +12,9 @@ def middle_of_2_point(p1, p2):
     return ( int((p1[0]+p2[0])/2) , 
              int((p1[1]+p2[1])/2) )
 
+colorYellow = (0, 255, 255)
+colorBlack = (0, 0, 0)
+colorGreen = (0, 255, 0)
 
 client = "localhost"
 
@@ -50,6 +53,8 @@ if __name__ == '__main__' :
  
  
     bbox = cv2.selectROI(frame, False)
+
+    myServer.sendMessageToClient("3")
  
     ok = tracker.init(frame, bbox)
 
@@ -115,7 +120,8 @@ if __name__ == '__main__' :
 
             currentPoint = middle_of_2_point(p1, p2)
 
-            cv2.arrowedLine(frame, currentPoint, centerPoint, (0, 0, 0), 3)
+            # opencv color : (b, g, r)
+            cv2.arrowedLine(frame, currentPoint, centerPoint, colorYellow, 3)
 
             # show car direction message
 
@@ -123,20 +129,22 @@ if __name__ == '__main__' :
             if centerPoint[0] - currentPoint[0] > 0:
                 # turn camera to left
                 directionMessage = "Turn Left"
+                Server.sendMessageToClient("0")
             else:
                 directionMessage = "Turn Right"
+                Server.sendMessageToClient("1")
 
-            cv2.putText(frame, directionMessage, (int(frameWidth/2),30), cv2.FONT_HERSHEY_SIMPLEX, 1, (0,0,0),2);
+            cv2.putText(frame, directionMessage, (int(frameWidth/2),30), cv2.FONT_HERSHEY_SIMPLEX, 1, colorBlack,2);
 
         else :
             # Tracking failure
             cv2.putText(frame, "Tracking failure detected", (100,80), cv2.FONT_HERSHEY_SIMPLEX, 0.75,(0,0,255),2)
  
         # Display tracker type on frame
-        cv2.putText(frame, tracker_type + " Tracker", (100,20), cv2.FONT_HERSHEY_SIMPLEX, 0.75, (0,170,50),2);
+        cv2.putText(frame, tracker_type + " Tracker", (100,30), cv2.FONT_HERSHEY_SIMPLEX, 1, colorGreen,2);
      
         # Display FPS on frame
-        cv2.putText(frame, "FPS : " + str(int(fps)), (100,50), cv2.FONT_HERSHEY_SIMPLEX, 0.75, (0,170,50), 2);
+        cv2.putText(frame, "FPS : " + str(int(fps)), (100,60), cv2.FONT_HERSHEY_SIMPLEX, 1, colorGreen, 2);
  
         # Display result
         cv2.imshow("Tracking", frame)
