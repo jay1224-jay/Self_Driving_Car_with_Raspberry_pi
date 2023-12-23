@@ -7,12 +7,10 @@ class Server:
     def __init__(self, clientIP):
         print("start building socket...")
         self.s=socket.socket()
-        self.host = socket.gethostname()
-        print(self.host)
         self.ip=clientIP
-        self.port=6666
-        self.s.bind((self.host,self.port))
-        self.s.listen(2)
+        self.port=5000
+        self.s.bind((self.ip,self.port))
+        self.s.listen(10)
         self.conn, address = self.s.accept()
         print("Connection from: " + str(address))
         print("connect successfully")
@@ -20,9 +18,19 @@ class Server:
  
     def recvImageFromClient(self):
 
-        x=self.conn.recvfrom(1000000)
-        self.data=x[0]
-        self.data=pickle.loads(self.data)
+        image = b""
+        while True:
+            print("wait for recv")
+            x=self.conn.recv(1000000)
+            print("recved")
+            print("keep recv partial msg, x = ", x, len(x))
+            image += x
+            if x[-4:] == b'stop':
+                break
+        self.data = image
+        print(self.data)
+        print(len(image))
+        self.data=pickle.loads(image)
         self.data = cv2.imdecode(self.data, cv2.IMREAD_COLOR)
 
         return self.data

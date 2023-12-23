@@ -21,7 +21,7 @@ client = "0.0.0.0"
 if __name__ == '__main__' :
  
     myServer = Server(clientIP = client)
-    myServer.sendMessageToClient("Hello from server")
+    # myServer.sendMessageToClient("Hello from server")
 
     frame = myServer.recvImageFromClient()
 
@@ -64,7 +64,7 @@ if __name__ == '__main__' :
  
     while True:
 
-        myServer.sendMessageToClient("")
+        myServer.sendMessageToClient("goon")
         frame = myServer.recvImageFromClient()
 
         timer = cv2.getTickCount()
