@@ -8,6 +8,7 @@ client_socket.connect((host, port))  # connect to the server
 
 cap = cv2.VideoCapture(-1)  # use 0 if not using Raspberry Pi camera slot
 
+preMessage = ""
 while True:
 
     ret,photo = cap.read()
@@ -39,6 +40,7 @@ while True:
         print("Start objtracking")
     print(messageFromServer)
 
+    
     if cv2.waitKey(10)==ord('q'):
         break
 
