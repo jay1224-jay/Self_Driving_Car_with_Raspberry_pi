@@ -70,9 +70,10 @@ if __name__ == '__main__' :
  
     while True:
 
+        timer = cv2.getTickCount()
+
         frame = myServer.recvImageFromClient()
 
-        timer = cv2.getTickCount()
  
         ok, bbox = tracker.update(frame)
  
