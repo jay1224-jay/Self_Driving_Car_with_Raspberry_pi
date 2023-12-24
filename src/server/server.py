@@ -20,17 +20,12 @@ class Server:
 
         image = b""
         while True:
-            # print("wait for recv")
             x=self.conn.recv(1000000)
-            # print("recved")
-            # print("keep recv partial msg, x = ", x, len(x))
             image += x
             if x[-4:] == b'stop':
                 image = image[:-4]
                 break
         self.data = image
-        # print(self.data)
-        # print(len(image))
         self.data=pickle.loads(image)
         self.data = cv2.imdecode(self.data, cv2.IMREAD_COLOR)
 

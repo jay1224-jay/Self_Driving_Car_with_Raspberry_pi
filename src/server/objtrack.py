@@ -61,8 +61,6 @@ if __name__ == '__main__' :
  
     time.sleep(2)
     bbox = cv2.selectROI(frame, False)
-
-    # myServer.sendMessageToClient("3")
  
     ok = tracker.init(frame, bbox)
 
@@ -138,6 +136,6 @@ if __name__ == '__main__' :
 
 cv2.destroyAllWindows()
 
-print(all_fps)
+print("\n".join([ str(x) for x in all_fps]))
 print("Average FPS: %.2f" % (sum(all_fps)/len(all_fps)))
 
