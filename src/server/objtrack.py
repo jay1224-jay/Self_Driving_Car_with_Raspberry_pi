@@ -18,6 +18,8 @@ colorGreen = (0, 255, 0)
 
 client = "0.0.0.0"
 
+all_fps = []
+
 if __name__ == '__main__' :
  
     myServer = Server(clientIP = client)
@@ -121,6 +123,8 @@ if __name__ == '__main__' :
      
         fps = cv2.getTickFrequency() / (cv2.getTickCount() - timer);
 
+        all_fps.append(fps)
+
         # Display FPS on frame
         cv2.putText(frame, "FPS : " + str(int(fps)), (100,60), cv2.FONT_HERSHEY_SIMPLEX, 1, colorGreen, 2);
  
@@ -132,3 +136,7 @@ if __name__ == '__main__' :
 
 
 cv2.destroyAllWindows()
+
+print(all_fps)
+print("Average FPS: %.2f" % (sum(all_fps)/len(all_fps)))
+
