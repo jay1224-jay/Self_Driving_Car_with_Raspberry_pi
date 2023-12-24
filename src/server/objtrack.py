@@ -21,9 +21,13 @@ client = "0.0.0.0"
 if __name__ == '__main__' :
  
     myServer = Server(clientIP = client)
-    # myServer.sendMessageToClient("Hello from server")
 
     frame = myServer.recvImageFromClient()
+
+    frameHeight   = frame.shape[0]
+    frameWidth    = frame.shape[1]
+    frameChannels = frame.shape[2]
+    print(f"Process resolution: {frameWidth}x{frameHeight}")
 
     # Set up tracker.
     # Instead of MIL, you can also use
@@ -60,54 +64,19 @@ if __name__ == '__main__' :
  
     ok = tracker.init(frame, bbox)
 
-
+    myServer.sendMessageToClient("start")
  
     while True:
 
-        myServer.sendMessageToClient("goon")
         frame = myServer.recvImageFromClient()
 
         timer = cv2.getTickCount()
  
         ok, bbox = tracker.update(frame)
  
-        fps = cv2.getTickFrequency() / (cv2.getTickCount() - timer);
 
         ratio = 3
         if ok:
-
-            """
-
-            # draw direction
-
-            print(bbox)
-            # Tracking success
-
-            if ( pre_point == (-1, -1) ):
-                pre_point = middle_of_2_point(p1, p2)
-            else:
-                # middle_point = (int(bbox[0] + bbox[2]/2), int(bbox[1] + bbox[3]/2))
-                middle_point = middle_of_2_point(p1, p2)
-
-            dx = middle_point[0] - pre_point[0]
-            dy = middle_point[1] - pre_point[1]
-
-            if ( (dx**2 + dy**2)**0.5 < 2 ):
-                dx *= 10 # ratio
-                dy *= 10 # ratio
-
-            
-            # end_point = (1000, 100)
-            end_point = (   int((middle_point[0]+dx*ratio)), 
-                            int((middle_point[1]+dy*ratio)) )
- 
-            cv2.arrowedLine(frame, middle_point, end_point, (0, 255, 0), 3)
-
-            pre_point = middle_point
-
-            print("middle point:", middle_point, ", dx:", dx, ", dy:", dy)
-            """
-
 
             # draw to center
             p1 = (int(bbox[0]), int(bbox[1]))
@@ -137,7 +106,11 @@ if __name__ == '__main__' :
                 directionMessage = "Turn Right"
                 myServer.sendMessageToClient("1")
 
-            cv2.putText(frame, directionMessage, (int(frameWidth/2),30), cv2.FONT_HERSHEY_SIMPLEX, 1, colorYellow,2);
+            if directionMessage == "Turn Left":
+                directionColor = colorYellow
+            else:
+                directionColor = colorBlack
+            cv2.putText(frame, directionMessage, (int(frameWidth/2),30), cv2.FONT_HERSHEY_SIMPLEX, 1, directionColor,2);
 
         else :
             # Tracking failure
@@ -146,6 +119,8 @@ if __name__ == '__main__' :
         # Display tracker type on frame
         cv2.putText(frame, tracker_type + " Tracker", (100,30), cv2.FONT_HERSHEY_SIMPLEX, 1, colorGreen,2);
      
+        fps = cv2.getTickFrequency() / (cv2.getTickCount() - timer);
+
         # Display FPS on frame
         cv2.putText(frame, "FPS : " + str(int(fps)), (100,60), cv2.FONT_HERSHEY_SIMPLEX, 1, colorGreen, 2);
  
