@@ -12,15 +12,16 @@ servo_pwm = GPIO.PWM(SERVO_PIN1, freq)
 servo_pwm.start(50)
 """
 
-STOP  = 0
-RIGHT = 1
-LEFT  = 2
+STOP        = 0
+RIGHT       = 1
+LEFT        = 2
+STRAIGHT    = 3
 
 def PWMPercentage
 
 class Car:
 
-    def __init__(self, left_pin, right_pin, freq = 50):
+    def __init__(self, left_pin, right_pin, stopDistance = 20, freq = 50):
 
         """
         Car module for Raspberry pi
@@ -39,10 +40,11 @@ class Car:
         """
 
 
-        self.left_pin  = left_pin
-        self.right_pin = right_pin
-        self.freq      = freq
-        self.status    = STOP
+        self.left_pin       = left_pin
+        self.right_pin      = right_pin
+        self.freq           = freq
+        self.status         = STOP
+        self.stopDistance   = stopDistance
 
         # Set PWM object
         self.left_pwm  = GPIO.PWM(self.left_pin , self.freq)
@@ -61,6 +63,14 @@ class Car:
         self.left_duty_max = 4
         self.left_duty_mid = 5
         self.left_duty_min = 6
+
+    def GoStraight(self):
+
+        print("Car starts to go straight.")
+        self.left_pwm.ChangeDutyCycle(self.left_duty_mid)
+        self.right_pwm.ChangeDutyCycle(self.right_duty_mid)
+        
+        self.status = STRAIGHT
 
     def TurnRight(self):
         """
