@@ -17,7 +17,6 @@ colorGreen = (0, 255, 0)
 
 client = "0.0.0.0"
 
-all_fps = []
 
 if __name__ == '__main__' :
  
@@ -93,15 +92,24 @@ if __name__ == '__main__' :
             # show car direction message
 
             directionMessage = ""
-            if centerPoint[0] - currentPoint[0] > 0:
-                directionMessage = "Turn Left"
+            diff = centerPoint[0] - currentPoint[0]
+            print("diff:", diff)
+
+            if ( abs(diff) > 30 ):
+                if diff > 0:
+                    directionMessage = "Turn Left"
+                else:
+                    directionMessage = "Turn Right"
+
             else:
-                directionMessage = "Turn Right"
+                directionMessage = "Straight"
+                directionColor = colorGreen
 
             if directionMessage == "Turn Left":
                 directionColor = colorYellow
             else:
                 directionColor = colorBlack
+
             cv2.putText(frame, directionMessage, (int(frameWidth/2),30), cv2.FONT_HERSHEY_SIMPLEX, 1, directionColor,2);
 
         else :
@@ -113,7 +121,6 @@ if __name__ == '__main__' :
      
         fps = cv2.getTickFrequency() / (cv2.getTickCount() - timer);
 
-        all_fps.append(fps)
 
         # Display FPS on frame
         cv2.putText(frame, "FPS : " + str(int(fps)), (100,60), cv2.FONT_HERSHEY_SIMPLEX, 1, colorGreen, 2);
@@ -127,6 +134,4 @@ if __name__ == '__main__' :
 
 cv2.destroyAllWindows()
 
-print("\n".join([ str(x) for x in all_fps]))
-print("Average FPS: %.2f" % (sum(all_fps)/len(all_fps)))
 

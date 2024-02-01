@@ -37,7 +37,7 @@ def clientObjTrackLoop():
 	    client_socket.send(x_as_bytes)
 	    client_socket.send(b"stop")
 	    
-	    messageFromServer = client_socket.recv(1024).decode()
+	    messageFromServer = client_socket.recv(1024).decode()[0]
 
 	        
 	    """
@@ -45,6 +45,7 @@ def clientObjTrackLoop():
 
 	            0 stands for left
 	            1 stands for right
+                2 stands for straight
 	    """
 
 	    if messageFromServer == "0" and messageFromServer != preMessage:
@@ -57,8 +58,13 @@ def clientObjTrackLoop():
 	        print("Turn right")
 	        _direction = 1
 
-	    elif messageFromServer == "start" and messageFromServer != preMessage:
-	        preMessage = "start"
+	    elif messageFromServer == "2" and messageFromServer != preMessage:
+	        preMessage = "2"
+	        print("Turn right")
+	        _direction = 2
+
+	    elif messageFromServer == "start"[0] and messageFromServer != preMessage:
+	        preMessage = "start"[0]
 	        print("Start objtracking")
 	    
 	    if cv2.waitKey(10)==ord('q'):
@@ -83,7 +89,7 @@ def mainLoop():
 			myCar.TurnLeft()
 		elif direction == 1:
 			myCar.TurnRight()
-		else:
+		else: # direction == 2
 			myCar.GoStraight()
 
 

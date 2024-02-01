@@ -100,12 +100,20 @@ if __name__ == '__main__' :
             # show car direction message
 
             directionMessage = ""
-            if centerPoint[0] - currentPoint[0] > 0:
-                directionMessage = "Turn Left"
-                myServer.sendMessageToClient("0")
+
+            diff = centerPoint[0] - currentPoint[0]
+
+            if ( abs(diff) > 30 ):
+                if diff > 0:
+                    directionMessage = "Turn Left"
+                    myServer.sendMessageToClient("0")
+                else:
+                    directionMessage = "Turn Right"
+                    myServer.sendMessageToClient("1")
             else:
-                directionMessage = "Turn Right"
-                myServer.sendMessageToClient("1")
+                directionMessage = "Go Straight"
+                myServer.sendMessageToClient("2")
+
 
             if directionMessage == "Turn Left":
                 directionColor = colorYellow
